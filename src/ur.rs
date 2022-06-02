@@ -243,9 +243,9 @@ impl Decoder {
 
         let (t, components) = parse(lowercase.as_str())?;
 
-        if !self.validate_part(t) {
-            return Err(anyhow::anyhow!("invalid Scheme, mismatched type"));
-        }
+        // if !self.validate_part(t) {
+        //     return Err(anyhow::anyhow!("invalid Scheme, mismatched type"));
+        // }
 
         let payload = components.last().unwrap();
         let decoded = crate::bytewords::decode(payload, &crate::bytewords::Style::Minimal)?;
