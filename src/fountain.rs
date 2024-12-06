@@ -237,6 +237,37 @@ impl Encoder {
         }
     }
 
+    pub fn next_cyclic_part(&mut self) -> Part {
+        if self.current_sequence == self.parts.len() {
+            self.current_sequence = 1;
+        } else {
+            self.current_sequence += 1;
+        }
+
+        self.encode_whole_message().get(self.current_sequence - 1).unwrap().clone()
+    }
+
+    pub fn encode_whole_message(&self) -> Vec<Part> {
+        let mut parts = Vec::new();
+        for i in 1..=self.parts.len() {
+            let indexes = choose_fragments(i, self.parts.len(), self.checksum);
+
+            let mut mixed = vec![0; self.parts[0].len()];
+            for item in indexes {
+                xor(&mut mixed, &self.parts[item]);
+            }
+
+            parts.push(Part {
+                sequence: i,
+                sequence_count: self.parts.len(),
+                message_length: self.message_length,
+                checksum: self.checksum,
+                data: mixed,
+            });
+        }
+        parts
+    }
+
     /// Returns the number of segments the original message has been split up into.
     ///
     /// # Examples
