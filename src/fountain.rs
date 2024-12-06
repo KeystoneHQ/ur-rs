@@ -178,6 +178,25 @@ impl Encoder {
         }
     }
 
+    pub fn encode_whole_message(&self) -> Vec<Part> {
+        let mut parts = Vec::new();
+        for i in 1..=self.parts.len() {
+            let indexes = choose_fragments(i, self.parts.len(), self.checksum);
+            let init = vec![0; self.parts.get(0).unwrap().len()];
+            let mixed = indexes.into_iter().fold(init, |acc, item| {
+                xor(acc.as_slice(), self.parts.get(item).unwrap())
+            });
+            parts.push(Part {
+                sequence: i,
+                sequence_count: self.parts.len(),
+                message_length: self.message_length,
+                checksum: self.checksum,
+                data: mixed,
+            });
+        }
+        parts
+    }
+
     /// Returns the number of segments the original message has been split up into.
     ///
     /// # Examples
