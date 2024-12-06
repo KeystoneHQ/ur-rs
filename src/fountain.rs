@@ -178,6 +178,16 @@ impl Encoder {
         }
     }
 
+    pub fn next_cyclic_part(&mut self) -> Part {
+        if self.current_sequence == self.parts.len() {
+            self.current_sequence = 1;
+        } else {
+            self.current_sequence += 1;
+        }
+
+        self.encode_whole_message().get(self.current_sequence - 1).unwrap().clone()
+    }
+
     pub fn encode_whole_message(&self) -> Vec<Part> {
         let mut parts = Vec::new();
         for i in 1..=self.parts.len() {
