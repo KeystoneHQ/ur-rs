@@ -145,6 +145,12 @@ impl Encoder {
         Ok(encode_ur(&[self.ur_type.clone(), part.sequence_id(), body]))
     }
 
+    pub fn next_cyclic_part(&mut self) -> Result<String, Error> {
+        let part = self.fountain.next_cyclic_part();
+        let body = crate::bytewords::encode(&part.cbor()?, crate::bytewords::Style::Minimal);
+        Ok(encode_ur(&[self.ur_type.clone(), part.sequence_id(), body]))
+    }
+
     /// Returns the current count of already emitted parts.
     ///
     /// # Examples
