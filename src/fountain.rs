@@ -82,15 +82,14 @@
 //! );
 //! ```
 
-
-#[cfg(not(feature = "std"))]
-use alloc::string::String;
-#[cfg(not(feature = "std"))]
-use alloc::{format, vec};
 #[cfg(not(feature = "std"))]
 use alloc::collections::{BTreeMap, BTreeSet, VecDeque};
 #[cfg(not(feature = "std"))]
+use alloc::string::String;
+#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
+#[cfg(not(feature = "std"))]
+use alloc::{format, vec};
 use core::cmp::min;
 use std::convert::Infallible;
 
@@ -244,7 +243,10 @@ impl Encoder {
             self.current_sequence += 1;
         }
 
-        self.encode_whole_message().get(self.current_sequence - 1).unwrap().clone()
+        self.encode_whole_message()
+            .get(self.current_sequence - 1)
+            .unwrap()
+            .clone()
     }
 
     pub fn encode_whole_message(&self) -> Vec<Part> {
@@ -712,7 +714,7 @@ fn choose_fragments(sequence: usize, fragment_count: usize, checksum: u32) -> Ve
     }
 
     #[allow(clippy::cast_possible_truncation)]
-        let sequence = sequence as u32;
+    let sequence = sequence as u32;
 
     let mut seed = [0u8; 8];
     seed[0..4].copy_from_slice(&sequence.to_be_bytes());
@@ -870,15 +872,15 @@ mod tests {
             "3171c5dc365766eff25ae47c6f10e7de48cfb8474e050e5fe997a6dc24",
             "e055c2433562184fa71b4be94f262e200f01c6f74c284b0dc6fae6673f",
         ]
-            .iter()
-            .enumerate()
-            .map(|(i, data)| super::Part {
-                sequence: i + 1,
-                sequence_count: 9,
-                message_length: 256,
-                checksum: 23_570_951,
-                data: hex::decode(data).unwrap(),
-            });
+        .iter()
+        .enumerate()
+        .map(|(i, data)| super::Part {
+            sequence: i + 1,
+            sequence_count: 9,
+            message_length: 256,
+            checksum: 23_570_951,
+            data: hex::decode(data).unwrap(),
+        });
         for (sequence, e) in expected_parts.into_iter().enumerate() {
             assert_eq!(encoder.current_sequence(), sequence);
             assert_eq!(encoder.next_part(), e);
@@ -1137,13 +1139,13 @@ mod tests {
         Part::from_cbor(&[
             0x85, 0x19, 0x1, 0x2, 0x19, 0x3, 0x4, 0x19, 0x5, 0x6, 0x19, 0x7, 0x8, 0x41, 0x5,
         ])
-            .unwrap();
+        .unwrap();
         // u32
         Part::from_cbor(&[
             0x85, 0x1a, 0x1, 0x2, 0x3, 0x4, 0x1a, 0x5, 0x6, 0x7, 0x8, 0x1a, 0x9, 0x10, 0x11, 0x12,
             0x1a, 0x13, 0x14, 0x15, 0x16, 0x41, 0x5,
         ])
-            .unwrap();
+        .unwrap();
         // u64
         assert!(matches!(
             Part::from_cbor(&[

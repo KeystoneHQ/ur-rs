@@ -220,11 +220,8 @@ fn encoded_byte(part: &str, minimal: bool) -> Option<u8> {
     if bytes.len() != expected_len {
         return None;
     }
-    let hash = usize::try_from(
-        (25 * u32::from(bytes[0]) + 11 * u32::from(bytes[expected_len - 1]))
-            % BYTES_INDEXED_BY_HASH.len() as u32,
-    )
-    .ok()?;
+    let hash = (25 * usize::from(bytes[0]) + 11 * usize::from(bytes[expected_len - 1]))
+        % BYTES_INDEXED_BY_HASH.len();
     let byte = BYTES_INDEXED_BY_HASH[hash]?;
     let expected = if minimal {
         crate::constants::MINIMALS[byte as usize]
