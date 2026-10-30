@@ -98,7 +98,7 @@ pub mod test_utils {
 
         #[must_use]
         pub fn from_crc(bytes: &[u8]) -> Self {
-            Self::from(&crate::crc32().checksum(bytes).to_be_bytes()[..])
+            Self::from(&crate::crc32(bytes).to_be_bytes()[..])
         }
     }
 

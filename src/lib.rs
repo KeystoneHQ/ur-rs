@@ -35,7 +35,6 @@
 //!    and emits an unbounded stream of parts which can be recombined at the receiving
 //!    decoder side.
 #![cfg_attr(not(feature = "std"), no_std)]
-
 #![forbid(unsafe_code)]
 
 #[cfg(not(feature = "std"))]
@@ -58,6 +57,6 @@ pub use self::ur::Decoder;
 pub use self::ur::Encoder;
 
 #[must_use]
-pub(crate) fn crc32() -> crc::Crc<u32> {
-    crc::Crc::<u32>::new(&crc::CRC_32_ISO_HDLC)
+pub(crate) fn crc32(data: &[u8]) -> u32 {
+    crc32fast::hash(data)
 }
